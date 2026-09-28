@@ -18,4 +18,9 @@ public class BookService {
         // 지금은 별도 가공 없이 창고지기가 가져온 도서 목록을 그대로 반환합니다.
         return bookRepository.findAll();
     }
+
+    public void createBook(Map<String, Object> body){
+        bookRepository.save(body);
+    }
+
 }

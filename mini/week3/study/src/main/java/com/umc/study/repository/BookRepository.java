@@ -21,4 +21,18 @@ public class BookRepository {
         // Map의 Key는 '컬럼명(title)', Value는 '실제 데이터(달빛 도서관)'가 됩니다.
         return jdbcTemplate.queryForList(sql);
     }
+
+    public void save(Map<String, Object> body){
+        // book_id는 AUTO_INCREMENT이므로 생략, is_available은 기본 true로 삽입
+        String sql = "INSERT INTO book (category_id, title, description, is_available) VALUES (?, ?, ?, true)";
+
+        // SQL 뒤에 파라미터를 차례대로 넘겨주면 ? 자리에 순서대로 안전하게 바인딩됩니다.
+        jdbcTemplate.update(
+                sql,
+                body.get("categoryId"),
+                body.get("title"),
+                body.get("description")
+        );
+    }
+
 }
