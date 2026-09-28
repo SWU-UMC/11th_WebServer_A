@@ -23,4 +23,8 @@ public class BookService {
         bookRepository.save(body);
     }
 
+    public List<Map<String, Object>> getBooksByCategory(Long categoryId) {
+        return bookRepository.findByCategoryId(categoryId);
+    }
+
 }
