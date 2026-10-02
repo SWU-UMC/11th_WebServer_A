@@ -22,9 +22,12 @@ public class BookService {
     private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public List<BookResponse> getBooks() {
-        return bookRepository.findAllByOrderByBookIdDesc()
-                .stream()
+    public List<BookResponse> getBooks(String keyword) {
+        List<Book> books = (keyword == null || keyword.isBlank())
+                ? bookRepository.findAllByOrderByBookIdDesc()
+                : bookRepository.findByTitleContaining(keyword);
+
+        return books.stream()
                 .map(BookResponse::from)
                 .toList();
     }

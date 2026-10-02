@@ -18,8 +18,8 @@ public class BookController {
     private final BookService bookService;
 
     @GetMapping
-    public List<BookResponse> getBooks() {
-        return bookService.getBooks();
+    public List<BookResponse> getBooks(@RequestParam(required = false) String keyword) {
+        return bookService.getBooks(keyword);
     }
 
     @PostMapping
