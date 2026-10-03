@@ -52,12 +52,11 @@ SWU UMC 11기 Web Server A팀 스터디 레포지토리입니다.
 
 ## 🛠 기술 스택
 
-| 구분 | 내용 |
+| 구분 | 스택 |
 | --- | --- |
-| Framework | **Spring Boot** (Java) 또는 **NestJS** (TypeScript) 중 하나를 선택 |
-| Database | MySQL |
-| API 테스트 | Postman |
-
+| Framework (택 1) | ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white) ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white) |
+| Database | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) |
+| API 테스트 | ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white) |
 <br>
 
 ## 📁 폴더 구조
