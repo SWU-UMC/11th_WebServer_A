@@ -9,7 +9,7 @@ export class BookResponseDto {
 
   static from(book: Book): BookResponseDto {
     return {
-      bookId: book.bookId,
+      bookId: Number(book.bookId),
       title: book.title,
       description: book.description,
       categoryName: book.category.name,

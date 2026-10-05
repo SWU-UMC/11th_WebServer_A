@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { BookService } from './book.service.js';
+import { BookResponseDto } from './dto/book-response.dto.js';
 
 @Controller('books')
 export class BookController {
@@ -7,7 +8,7 @@ export class BookController {
 
   // GET http://localhost:3000/books
   @Get()
-  async getBooks(): Promise<any> {
+  async getBooks(): Promise<BookResponseDto[]> {
     return await this.bookService.getAllBooks();
   }
 
