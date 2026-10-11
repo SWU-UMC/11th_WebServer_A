@@ -3,9 +3,9 @@ import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Member } from "./entity/member.entity.js";
 import { Rating } from "./entity/rating.entity.js";
-// import { MemberController } from "./controller/member.controller.js";
+import { MemberController } from "./controller/member.controller.js";
 // import { RatingController } from "./controller/rating.controller.js";
-// import { MemberService } from "./service/member.service.js";
+import { MemberService } from "./service/member.service.js";
 // import { RatingService } from "./service/rating.service.js";
 
 @Module({
@@ -23,7 +23,7 @@ import { Rating } from "./entity/rating.entity.js";
     }),
     TypeOrmModule.forFeature([Member, Rating]),
   ],
-  // controllers: [MemberController, RatingController],
-  // providers: [MemberService, RatingService],
+  controllers: [MemberController],
+  providers: [MemberService],
 })
 export class AppModule {}
