@@ -1,0 +1,12 @@
+import { Controller, Get, Param } from '@nestjs/common';
+import { MemberService } from '../service/member.service';
+
+@Controller('members')
+export class MemberController {
+  constructor(private readonly memberService: MemberService) {}
+
+  @Get('nickname/:nickname')
+  checkNickname(@Param('nickname') nickname: string) {
+    return this.memberService.checkNickname(nickname);
+  }
+}
