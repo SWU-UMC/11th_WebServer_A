@@ -9,4 +9,10 @@ export class MemberController {
   checkNickname(@Param('nickname') nickname: string) {
     return this.memberService.checkNickname(nickname);
   }
+
+  @Get('email/:email')
+checkEmail(@Param('email') email: string) {
+  return this.memberService.checkEmail(email);
+}
+
 }

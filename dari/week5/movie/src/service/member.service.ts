@@ -20,4 +20,14 @@ export class MemberService {
       available: !exists,
     };
   }
+
+  async checkEmail(email: string): Promise<CheckResponseDto> {
+  const exists = await this.memberRepository.exists({
+    where: { email },
+  });
+
+  return {
+    available: !exists,
+  };
+}
 }
