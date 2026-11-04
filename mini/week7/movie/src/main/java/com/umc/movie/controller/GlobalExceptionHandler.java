@@ -1,6 +1,7 @@
 package com.umc.movie.controller;
 
 import com.umc.movie.dto.ApiResponse;
+import com.umc.movie.exception.ApiException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -58,4 +59,14 @@ public class GlobalExceptionHandler {
                         exception.getReason()
                 ));
     }
+
+    // 직접 정의한 ApiException을 공통 실패 응답 형식으로 변환
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiResponse<Void>> handleApiException(ApiException exception) {
+        return ResponseEntity.status(exception.getStatus())
+                .body(ApiResponse.failure(
+                        exception.getCode(), exception.getMessage()
+                ));
+    }
+
 }
