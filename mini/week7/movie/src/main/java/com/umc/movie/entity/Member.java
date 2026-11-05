@@ -32,4 +32,8 @@ public class Member extends BaseTimeEntity {
         this.password = password;
         this.nickname = nickname;
     }
+    // 닉네임 변경 의도를 드러내는 메서드로 수정할 필드를 명확히 지정합니다.
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

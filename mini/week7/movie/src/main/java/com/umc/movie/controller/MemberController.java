@@ -25,6 +25,17 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.ok("회원 정보를 조회했습니다.", response));
     }
 
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<MemberInfoResponse>> updateMyInfo(
+            // 인터셉터가 검증한 회원 ID로 수정 대상을 결정합니다.
+            @RequestAttribute(AuthInterceptor.MEMBER_ID) Long memberId,
+            // JSON의 nickname을 DTO로 받고 @Valid로 빈 값과 길이를 검사합니다.
+            @RequestBody @Valid MemberUpdateRequest request
+    ) {
+        MemberInfoResponse response = memberService.updateMyInfo(memberId, request);
+        return ResponseEntity.ok(ApiResponse.ok("회원 정보를 수정했습니다.", response));
+    }
+
     // URL의 {nickname} 값을 @PathVariable로 받아 닉네임 사용 가능 여부를 조회합니다.
     @GetMapping("/nickname/{nickname}")
     public NicknameCheckResponse checkNickname(@PathVariable String nickname) {

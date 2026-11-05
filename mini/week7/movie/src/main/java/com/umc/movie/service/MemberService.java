@@ -2,6 +2,7 @@ package com.umc.movie.service;
 
 import com.umc.movie.dto.EmailCheckResponse;
 import com.umc.movie.dto.MemberInfoResponse;
+import com.umc.movie.dto.MemberUpdateRequest;
 import com.umc.movie.dto.MemberResponse;
 import com.umc.movie.dto.NicknameCheckResponse;
 import com.umc.movie.dto.SignUpRequest;
@@ -84,5 +85,27 @@ public class MemberService {
                 savedMember.getEmail(),
                 savedMember.getNickname()
         );
+    }
+
+    // 조회부터 수정까지 하나의 트랜잭션으로 처리하며, 런타임 예외가 발생하면 변경을 되돌립니다.
+    @Transactional
+    public MemberInfoResponse updateMyInfo(Long memberId, MemberUpdateRequest request) {
+        // memberId는 클라이언트가 입력한 값이 아니라 JWT에서 검증한 현재 로그인 회원의 ID입니다.
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND, "MEMBER404_1",
+                        "해당 회원을 찾을 수 없습니다."));
+
+        // 나를 제외한 다른 회원이 같은 닉네임을 쓰는 경우에만 중복입니다.
+        // DB의 UNIQUE 제약과 별도로 미리 확인하여 정해둔 MEMBER409_1 응답을 반환합니다.
+        if (memberRepository.existsByNicknameAndMemberIdNot(request.nickname(), memberId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "MEMBER409_1",
+                    "이미 사용 중인 닉네임입니다.");
+        }
+
+        member.updateNickname(request.nickname());
+        memberRepository.save(member);
+
+        // 수정한 엔티티에서 응답 DTO를 만들어 변경된 닉네임을 바로 돌려줍니다.
+        return MemberInfoResponse.from(member);
     }
 }
