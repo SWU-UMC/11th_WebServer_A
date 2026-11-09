@@ -5,6 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ApiException } from '../exception/api.exception.js';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -17,9 +18,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? body
         : (body as { message: string | string[] }).message;
 
+    const code =
+      exception instanceof ApiException ? exception.code : 'COMMON' + status;
+
     response.status(status).json({
       isSuccess: false,
-      code: 'COMMON' + status,
+      code,
       message: Array.isArray(message) ? message[0] : message,
       result: null,
     });

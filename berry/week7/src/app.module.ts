@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from './entity/member.entity.js';
 import { Rating } from './entity/rating.entity.js';
+import { AuthController } from './controller/auth.controller.js';
 import { MemberController } from './controller/member.controller.js';
 import { RatingController } from './controller/rating.controller.js';
+import { AuthService } from './service/auth.service.js';
 import { MemberService } from './service/member.service.js';
 import { RatingService } from './service/rating.service.js';
 
@@ -22,8 +25,20 @@ import { RatingService } from './service/rating.service.js';
       synchronize: false,
     }),
     TypeOrmModule.forFeature([Member, Rating]),
+    JwtModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: Number(
+            configService.get<string>('JWT_ACCESS_EXPIRATION') ?? 3600,
+          ),
+        },
+      }),
+    }),
   ],
-  controllers: [MemberController, RatingController],
-  providers: [MemberService, RatingService],
+  controllers: [AuthController, MemberController, RatingController],
+  providers: [AuthService, MemberService, RatingService],
 })
 export class AppModule {}

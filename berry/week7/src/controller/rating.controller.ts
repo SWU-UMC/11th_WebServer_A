@@ -9,56 +9,74 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { CreateRatingDto } from '../dto/create-rating.dto.js';
 import { UpdateRatingDto } from '../dto/update-rating.dto.js';
 import { RatingService } from '../service/rating.service.js';
+import { AuthGuard } from '../guard/auth.guard.js';
 
-@Controller('members')
+@Controller()
 export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
-  @Get(':memberId/ratings')
+  @Get('members/:memberId/ratings')
   getMemberRatings(@Param('memberId', ParseIntPipe) memberId: number) {
     return this.ratingService.getRatingsByMember(memberId);
   }
 
-  @Post(':memberId/ratings')
+  @Post('ratings')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Param('memberId', ParseIntPipe) memberId: number,
-    @Body() dto: CreateRatingDto,
-  ) {
-    const ratingId = await this.ratingService.create(memberId, dto);
+  async create(@Req() request: Request, @Body() dto: CreateRatingDto) {
+    const memberId = request['memberId'] as number;
+
+    const result = await this.ratingService.create(memberId, dto);
     return {
       isSuccess: true,
       code: 'COMMON201',
       message: '평점 등록에 성공했습니다.',
-      result: { ratingId },
+      result,
     };
   }
 
-  @Patch(':memberId/ratings/:ratingId')
+  @Patch('ratings/:ratingId')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   async update(
-    @Param('memberId', ParseIntPipe) memberId: number,
+    @Req() request: Request,
     @Param('ratingId', ParseIntPipe) ratingId: number,
     @Body() dto: UpdateRatingDto,
   ) {
-    await this.ratingService.update(ratingId, memberId, dto);
+    const memberId = request['memberId'] as number;
+
+    const result = await this.ratingService.update(memberId, ratingId, dto);
     return {
       isSuccess: true,
       code: 'COMMON200',
       message: '평점 수정에 성공했습니다.',
-      result: null,
+      result,
     };
   }
 
-  @Delete(':memberId/ratings/:ratingId')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('ratings/:ratingId')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   async delete(
-    @Param('memberId', ParseIntPipe) memberId: number,
+    @Req() request: Request,
     @Param('ratingId', ParseIntPipe) ratingId: number,
   ) {
-    await this.ratingService.delete(ratingId, memberId);
+    const memberId = request['memberId'] as number;
+
+    await this.ratingService.delete(memberId, ratingId);
+
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '평점을 삭제했습니다.',
+      result: null,
+    };
   }
 }
