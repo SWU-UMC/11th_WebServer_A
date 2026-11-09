@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards
@@ -14,6 +15,7 @@ import { MemberService } from "../service/member.service.js";
 import type { Request } from 'express'; // 데코레이터 시그니처에 쓰는 타입은 import type 이어야 함
 import { AuthGuard } from '../guard/auth.guard.js';
 import { MemberInfoResponseDto } from '../dto/member-info-response.dto.js';
+import { MemberUpdateRequestDto } from "../dto/member-update-request.dto.js";
 
 @Controller("members")
 export class MemberController {
@@ -52,6 +54,23 @@ export class MemberController {
       isSuccess: true,
       code: 'COMMON200',
       message: '회원 정보를 조회했습니다.',
+      result,
+    };
+  }
+
+  @Patch('me')
+  @UseGuards(AuthGuard)
+  async updateMyInfo(
+    @Req() request: Request,
+    @Body() dto: MemberUpdateRequestDto,
+  ) {
+    const memberId = request['memberId'] as number;
+
+    const result = await this.memberService.updateMyInfo(memberId, dto);
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '회원 정보를 수정했습니다.',
       result,
     };
   }
