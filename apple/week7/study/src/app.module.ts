@@ -3,8 +3,10 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Member } from "./entity/member.entity.js";
 import { Rating } from "./entity/rating.entity.js";
+import { AuthController } from "./controller/auth.controller.js";
 import { MemberController } from "./controller/member.controller.js";
 import { RatingController } from "./controller/rating.controller.js";
+import { AuthService } from "./service/auth.service.js";
 import { MemberService } from "./service/member.service.js";
 import { RatingService } from "./service/rating.service.js";
 import { JwtModule } from '@nestjs/jwt';
@@ -35,7 +37,7 @@ import { JwtModule } from '@nestjs/jwt';
       }),
     }),
   ],
-  controllers: [MemberController, RatingController],
-  providers: [MemberService, RatingService],
+  controllers: [AuthController, MemberController, RatingController],
+  providers: [AuthService, MemberService, RatingService],
 })
 export class AppModule {}
