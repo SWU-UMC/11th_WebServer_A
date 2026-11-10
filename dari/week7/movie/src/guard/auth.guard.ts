@@ -4,7 +4,10 @@ import {
   HttpStatus,
   Injectable,
 } from '@nestjs/common';
-import { JwtService, TokenExpiredError } from '@nestjs/jwt';
+import {
+  JwtService,
+  TokenExpiredError,
+} from '@nestjs/jwt';
 import type { Request } from 'express';
 import { ApiException } from '../exception/api.exception';
 
@@ -16,9 +19,13 @@ export interface AuthenticatedRequest extends Request {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+  ) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  async canActivate(
+    context: ExecutionContext,
+  ): Promise<boolean> {
     const request =
       context.switchToHttp().getRequest<AuthenticatedRequest>();
 
