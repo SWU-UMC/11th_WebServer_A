@@ -9,48 +9,61 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateRatingDto } from '../dto/create-rating.dto';
 import { UpdateRatingDto } from '../dto/update-rating.dto';
+import { AuthGuard } from '../guard/auth.guard';
+import type { AuthenticatedRequest } from '../guard/auth.guard';
 import { RatingService } from '../service/rating.service';
 
-@Controller('members')
+@Controller()
 export class RatingController {
-  constructor(private readonly ratingService: RatingService) {}
+  constructor(
+    private readonly ratingService: RatingService,
+  ) {}
 
-  @Get(':memberId/ratings')
+  // 기존 공개 조회 API는 유지합니다.
+  @Get('members/:memberId/ratings')
   getMemberRatings(
     @Param('memberId', ParseIntPipe) memberId: number,
   ) {
     return this.ratingService.getRatingsByMember(memberId);
   }
 
-  @Post(':memberId/ratings')
+  @Post('ratings')
+  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(
-    @Param('memberId', ParseIntPipe) memberId: number,
+    @Req() request: AuthenticatedRequest,
     @Body() dto: CreateRatingDto,
   ) {
-    const ratingId = await this.ratingService.create(
-      memberId,
+    const result = await this.ratingService.create(
+      request.memberId,
       dto,
     );
 
     return {
       isSuccess: true,
       code: 'COMMON201',
-      message: '평점 등록에 성공했습니다.',
-      result: ratingId,
+      message: '평점을 등록했습니다.',
+      result,
     };
   }
 
-  @Patch(':memberId/ratings/:ratingId')
+  @Patch('ratings/:ratingId')
+  @UseGuards(AuthGuard)
   async update(
-    @Param('memberId', ParseIntPipe) memberId: number,
+    @Req() request: AuthenticatedRequest,
     @Param('ratingId', ParseIntPipe) ratingId: number,
     @Body() dto: UpdateRatingDto,
   ) {
-    await this.ratingService.update(ratingId, memberId, dto);
+    await this.ratingService.update(
+      request.memberId,
+      ratingId,
+      dto,
+    );
 
     return {
       isSuccess: true,
@@ -60,12 +73,23 @@ export class RatingController {
     };
   }
 
-  @Delete(':memberId/ratings/:ratingId')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete('ratings/:ratingId')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
   async delete(
-    @Param('memberId', ParseIntPipe) memberId: number,
+    @Req() request: AuthenticatedRequest,
     @Param('ratingId', ParseIntPipe) ratingId: number,
   ) {
-    await this.ratingService.delete(ratingId, memberId);
+    await this.ratingService.delete(
+      request.memberId,
+      ratingId,
+    );
+
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '평점 삭제에 성공했습니다.',
+      result: null,
+    };
   }
 }
