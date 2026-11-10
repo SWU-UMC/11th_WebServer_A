@@ -1,19 +1,32 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MemberController } from './controller/member.controller';
+import { RatingController } from './controller/rating.controller';
 import { Member } from './entity/member.entity';
 import { Rating } from './entity/rating.entity';
-import { MemberController } from './controller/member.controller';
 import { MemberService } from './service/member.service';
-import { RatingController } from './controller/rating.controller';
 import { RatingService } from './service/rating.service';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: Number(
+            configService.get<string>('JWT_ACCESS_EXPIRATION', '3600'),
+          ),
+        },
+      }),
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -30,15 +43,7 @@ import { RatingService } from './service/rating.service';
     }),
     TypeOrmModule.forFeature([Member, Rating]),
   ],
-  controllers: [
-    AppController,
-    MemberController,
-    RatingController,
-  ],
-  providers: [
-    AppService,
-    MemberService,
-    RatingService,
-  ],
+  controllers: [AppController, MemberController, RatingController],
+  providers: [AppService, MemberService, RatingService],
 })
 export class AppModule {}
