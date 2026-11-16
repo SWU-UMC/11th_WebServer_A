@@ -21,13 +21,25 @@ export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 
   @Get('nickname/:nickname')
-  checkNickname(@Param('nickname') nickname: string) {
-    return this.memberService.checkNickname(nickname);
+  async checkNickname(@Param('nickname') nickname: string) {
+    const result = await this.memberService.checkNickname(nickname);
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '닉네임 중복 여부를 조회했습니다.',
+      result,
+    };
   }
 
   @Get('email/:email')
-  checkEmail(@Param('email') email: string) {
-    return this.memberService.checkEmail(email);
+  async checkEmail(@Param('email') email: string) {
+    const result = await this.memberService.checkEmail(email);
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '이메일 중복 여부를 조회했습니다.',
+      result,
+    };
   }
 
   @Post()

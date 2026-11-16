@@ -23,8 +23,14 @@ export class RatingController {
   constructor(private readonly ratingService: RatingService) {}
 
   @Get('members/:memberId/ratings')
-  getMemberRatings(@Param('memberId', ParseIntPipe) memberId: number) {
-    return this.ratingService.getRatingsByMember(memberId);
+  async getMemberRatings(@Param('memberId', ParseIntPipe) memberId: number) {
+    const result = await this.ratingService.getRatingsByMember(memberId);
+    return {
+      isSuccess: true,
+      code: 'COMMON200',
+      message: '내 평점 목록을 조회했습니다.',
+      result,
+    };
   }
 
   @Post('ratings')
