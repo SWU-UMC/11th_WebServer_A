@@ -8,10 +8,12 @@ import { Rating } from './entity/rating.entity.js';
 import { AuthController } from './controller/auth.controller.js';
 import { FavoriteController } from './controller/favorite.controller.js';
 import { MemberController } from './controller/member.controller.js';
+import { MovieRecordController } from './controller/movie-record.controller.js';
 import { RatingController } from './controller/rating.controller.js';
 import { AuthService } from './service/auth.service.js';
 import { FavoriteService } from './service/favorite.service.js';
 import { MemberService } from './service/member.service.js';
+import { MovieRecordService } from './service/movie-record.service.js';
 import { RatingService } from './service/rating.service.js';
 
 @Module({
@@ -46,7 +48,14 @@ import { RatingService } from './service/rating.service.js';
     MemberController,
     RatingController,
     FavoriteController,
+    MovieRecordController,
   ],
-  providers: [AuthService, MemberService, RatingService, FavoriteService],
+  providers: [
+    AuthService,
+    MemberService,
+    RatingService,
+    FavoriteService,
+    MovieRecordService,
+  ],
 })
 export class AppModule {}
