@@ -1,3 +1,5 @@
+import { MovieRecordController } from './controller/movie-record.controller';
+import { MovieRecordService } from './service/movie-record.service';
 import { Module } from '@nestjs/common';
 import {
   ConfigModule,
@@ -92,14 +94,15 @@ import { RatingService } from './service/rating.service';
     MemberController,
     RatingController,
     FavoriteController,
+    MovieRecordController,
   ],
-
-  providers: [
+    providers: [
     AppService,
     AuthService,
     MemberService,
     RatingService,
     FavoriteService,
+    MovieRecordService,
   ],
 })
 export class AppModule {}
